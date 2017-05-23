@@ -7,11 +7,11 @@ As this is a combined client/sample demo, there is a bit of setup required.
 
 Setup:
 1) Register a bot with the Bot Framework at http://dev.botframework.com/ and add the AppId and AppPassword to TriviaBot\Web.config.
-2) Enable the Direct Line channel in the bot settings page, and paste a Direct Line secret in TriviaApp\BotConnection.cs.
+2) Enable the Direct Line channel in the bot settings page, Add a new site and paste a Direct Line secret in TriviaApp\BotConnection.cs.
 3) Create a LUIS app on http://luis.ai/ and import TriviaBotLU.json as a new app. Train and publish the model, and add the app id and subscription key in TriviaBot\TriviaDialog.cs (there is an error pointing to the location).
     The LUIS app id and subscription key can be extracted from the Endpoint Url provided on the "Publish App" page at http://luis.ai/
-    The link format is: https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/<appid>?subscription-key=<subscription key>&verbose=true&q=.
-4) Publish the Bot as an Azure App Service, and add the public endpoint (<hosturl>/api/messages) to the Bot Framework portal settings page. Make sure to use https instead of http in the url.
+    The link format is: https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/yourappid?subscription-key=yoursubscriptionkey&verbose=true&q=.
+4) Publish the Bot as an Azure App Service, and add the public endpoint (yourhosturl/api/messages) to the Bot Framework portal settings page. Make sure to use https instead of http in the url.
 5) [Optional] To improve speech recognition for your bot: On  http://dev.botframework.com/ go to the bot's settings. In the "Speech recognition priming with LUIS" section you should see a list of LUIS apps associated with the account you are logged in with. Check the new LUIS app you created for this bot and hit save. This information is used to improve speech recognition when you speak to this bot and uses the Cognitive Speech apis for speech recognition. Speech recognition priming improves the recognition accuracy for the utterances and entities defined in your LUIS app for this bot.
 
 To start a conversation with this bot, you can say something like "let's play trivia" or "let's play geography trivia"
