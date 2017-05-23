@@ -12,9 +12,9 @@ Setup:
     The LUIS app id and subscription key can be extracted from the Endpoint Url provided on the "Publish App" page at http://luis.ai/
     The link format is: https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/<appid>?subscription-key=<subscription key>&verbose=true&q=.
 4) Publish the Bot as an Azure App Service, and add the public endpoint (<hosturl>/api/messages) to the Bot Framework portal settings page. Make sure to use https instead of http in the url.
-5) [Optional] To improve speech recognition for your bot: On  http://dev.botframework.com/ go to the bot's settings. In the "Speech recognition priming with LUIS" section you should see a list of LUIS apps assocaited with the account you are logged in with. Check the new LUIS app you created for this bot and hit save. This information is used to improve speech recognition when you speak to this bot and use Cognitive speech apis for speech recognition. Speech recognition priming improves the recognition accuracy for the utterances and entities defined in your LUIS app for this bot.
+5) [Optional] To improve speech recognition for your bot: On  http://dev.botframework.com/ go to the bot's settings. In the "Speech recognition priming with LUIS" section you should see a list of LUIS apps associated with the account you are logged in with. Check the new LUIS app you created for this bot and hit save. This information is used to improve speech recognition when you speak to this bot and uses the Cognitive Speech apis for speech recognition. Speech recognition priming improves the recognition accuracy for the utterances and entities defined in your LUIS app for this bot.
 
-To start a same in a conversation with this bot, you can say something like "let's play trivia" or "let's play geography trivia"
+To start a conversation with this bot, you can say something like "let's play trivia" or "let's play geography trivia"
 
 You can talk to your new bot in multiple ways. Here are some options to try, all of which support speech input and output:
 1) Using the TriviaApp included in this sample. Simply hit F5 in Visual Studio 
