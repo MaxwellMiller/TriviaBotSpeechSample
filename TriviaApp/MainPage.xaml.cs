@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Bot.Client.SpeechRecognition;
+using Microsoft.Bot.Client.SpeechSynthesis;
+using Microsoft.Bot.Connector.DirectLine;
+using TrivaApp.ViewModels;
+using TriviaBot.Shared;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
-using Microsoft.Bot.Client.SpeechRecognition;
-using TrivaApp.ViewModels;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using Microsoft.Bot.Connector.DirectLine;
-using Microsoft.Bot.Client.Universal.SpeechRecognition;
-using Microsoft.Bot.Client.Universal.SpeechSynthesis;
-using TriviaBot.Shared;
 
 namespace TrivaApp
 {
@@ -59,20 +58,24 @@ namespace TrivaApp
         {
             this.InitializeComponent();
 
-            var windowsSpeechRecognizer = new WindowsMediaSpeechRecognizer();
+            var windowsSpeechRecognizer = new WindowsSpeechRecognizer();
 
             // Create the client. By default, it will poll the REST endpoint provided by the direct line, but optionally, we can give it a websocket implementation to use
-            _botClient = new Microsoft.Bot.Client.BotClient(BotConnection.DirectLineSecret, BotConnection.ApplicationName, new Microsoft.Bot.Client.DirectLine.WebSocketConnection())
+            _botClient = new Microsoft.Bot.Client.BotClient(BotConnection.DirectLineSecret, BotConnection.ApplicationName)
             {
                 // Use the speech synthesizer implementation in the WinRT Windows.Media.SpeechSynthesis namespace
-                SpeechSynthesizer = new WindowsMediaSpeechSynthesizer(),
+                // Any voice supported by the API can be used. See this page as a reference: https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
+                // The Built-in Windows speech synthesizer can be used here as an alternative, for a free solution:
+                // SpeechSynthesizer = new WindowsSpeechSynthesizer(),
+                SpeechSynthesizer = new CognitiveServicesSpeechSynthesizer(BotConnection.BingSpeechKey, Microsoft.Bot.Client.SpeechSynthesis.CognitiveServices.VoiceNames.Jessa_EnUs),
 
                 // Use the Cognitive Services Speech-To-Text API, with speech priming support, as the speech recognizer
-                #error Please provide a Bing Speech API key, or replace this line with "SpeechRecognizer = windowsSpeechRecognizer,"
-                SpeechRecognizer = new CognitiveServicesSpeechRecognizer(null),
+                // The Built-in WindowsSpeechRecognizer can be used here as an alternative, for a free solution:
+                // SpeechRecognizer = windowsSpeechRecognizer,
+                SpeechRecognizer = new CognitiveServicesSpeechRecognizer(BotConnection.BingSpeechKey),
 
                 // Give us the ability to trigger speech recognition on keywords
-                // The WindowsMediaSpeechRecognizer can also be used as the primary SpeechRecognizer, instead of CognitiveServicesSpeechRecognizer (above)
+                // The WindowsMediaSpeechRecognizer can also be used as the primary speech recognizer, instead of CognitiveServicesSpeechRecognizer (above)
                 // for a free solution.
                 TriggerRecognizer = windowsSpeechRecognizer
             };
@@ -164,7 +167,7 @@ namespace TrivaApp
 
         private async void OnSpeechRecognitionStarted(object sender, EventArgs e) => await RunOnUi(async () =>
         {
-            await _botClient.SpeechSynthesizer.StopSpeaking();
+            await _botClient.SpeechSynthesizer.StopSpeakingAsync();
             _isListening = true;
             _model["HypothesisText"] = string.Empty;
             _model["SuggestionText"] = ListeningText;
@@ -414,8 +417,8 @@ namespace TrivaApp
         {
             // If the user clicked a category, stop any kind of speech input/output and just send the
             // category to the bot.
-            await _botClient.SpeechRecognizer.CancelRecognition();
-            await _botClient.SpeechSynthesizer.StopSpeaking();
+            await _botClient.SpeechRecognizer.CancelRecognitionAsync();
+            await _botClient.SpeechSynthesizer.StopSpeakingAsync();
 
             await _botClient.SendMessageToBot("switch to category " + category);
 
